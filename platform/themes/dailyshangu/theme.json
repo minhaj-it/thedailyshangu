@@ -1,0 +1,10 @@
+{
+    "id": "botble/{-theme}",
+    "name": "Dailyshangu",
+    "namespace": "Theme\\Dailyshangu\\",
+    "author": "Minhaj uddin",
+    "url": "www.minhaj-it.com",
+    "version": "2.5.0",
+    "description": "This is Dailyshangu News Theme",
+    "required_plugins": []
+}

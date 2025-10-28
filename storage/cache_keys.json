@@ -1,0 +1,53 @@
+{
+    "Botble\\ACL\\Models\\UserMeta": [
+        "65b83ad065dbeb5292d94ab9580d9273@user-meta-3"
+    ],
+    "Botble\\Menu\\Models\\Menu": [
+        "876a095a247b966461c4079f23f9e7ae@menu_location_ada4a4faeb65cf62a2d8d217e594b218",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_885b43f797c97591df3fbd14cb5e417a",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_3c7c33e43d2b148f596501e58f0ee516",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_c883db791b8b5fb37eb601a81853778f",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_a195ef6bea57e40884eb19944e91bdc7",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_89c14b3418adecba47a50a8850531107",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_8281535721ec86ee78d796363e4b951e",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_0c5bd8291c7313aa0ff654c9c50ac650",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_760dc7a586a65c2568db54a3338f2f82",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_b6f63c33ae84a89f4703114a45eccc9d",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_0fb45f6134735cd81173858cc09ace97",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_ab1d22fb20a95c91596c8db2f41aa367",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_ccb3fa12424cae705f896cb5c29a8c83",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_70f90444416d568eb7c3ff51cabef209",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_ae8c29f38c3923c52cfc0c9bb41ee219",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_3f8e51bd13827b1c14997a754a23d1b4",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_6beb96b29e67c308d8435553f5371143",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_38ca9723855b7c20dd7e80c6cd482bf7",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_e56d8bacdc73ad7f0c3e88c95b8825b3",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_d91b459017b1fa98b2590c678366fa33",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_2761d7a69eb3a3a8ae3dfd422c3d2ccf",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_ddb6a51b8989d925a2e2df609c13fa2d",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_82e874bfced39989273ea639ab490667",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_63a16ae10fa63e3b8098302da926161c",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_9c42c41c61f4df8faeda9353dcf74231",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_332ee9ef12f9359513f556cddc4703c9",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_6ec4b3ab64e7de1cd5c572afc6255755",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_a04480ac3bb0802e218551a507496b18",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_dc87f4b4b38a6b14cbd833015eaf77ea",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_f0e2f2707dd54f71574524abae2c0b42",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_2a5cef4f0495b6dffcbae6ee4157b6d8",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_b2732bb0f6fb427479480239e341efaa",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_aa382c81dbc00423f2f9515fde15ca93",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_5a543bbadba1e7833ba1f463029b4995",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_4afebf01e5a5ff3afca53df1a47bd426",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_d6a6b032d2a196b6b20f9cdf5e1b94d5",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_213a42ea75777863f90a1534f61d86e0",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_2772295926f62e7bcbb30ad5e1497ce9",
+        "876a095a247b966461c4079f23f9e7ae@menu_location_b7db897399c04e506fcf78eb7acdf526"
+    ],
+    "Botble\\Base\\Models\\AdminNotification": [
+        "91ca94b722506f03892a158294e61ceb@admin-notifications-count"
+    ],
+    "Botble\\Contact\\Models\\Contact": [
+        "0c175e4a57799ccc0d2967044852a2f8@unread-contacts",
+        "0c175e4a57799ccc0d2967044852a2f8@unread-contacts-count"
+    ]
+}

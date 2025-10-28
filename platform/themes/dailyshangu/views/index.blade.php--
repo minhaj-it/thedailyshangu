@@ -1,0 +1,1123 @@
+ @php
+    use Botble\Blog\Repositories\Interfaces\CategoryInterface;
+    use Botble\Blog\Repositories\Interfaces\PostInterface;
+    use Botble\Base\Enums\BaseStatusEnum;
+    use Illuminate\Support\Collection;
+
+    if (is_plugin_active('blog')) {
+        $categoryRepo = app(CategoryInterface::class);
+        $postRepo = app(PostInterface::class);
+
+        /**
+         * A reusable function to get category details and its posts WITHOUT caching.
+         * @param int $categoryId
+         * @param int $limit
+         * @return object { category: ?object, posts: Collection }
+         */
+        $getPostsForCategory = function(int $categoryId, int $limit) use ($categoryRepo, $postRepo) {
+            $category = $categoryRepo->getFirstBy(['id' => $categoryId, 'status' => BaseStatusEnum::PUBLISHED]);
+            if (!$category) {
+                return (object)['category' => null, 'posts' => collect()];
+            }
+            $allRelatedCategoryIds = array_unique(array_merge($categoryRepo->getAllRelatedChildrenIds($category), [$categoryId]));
+            $posts = $postRepo->getByCategory($allRelatedCategoryIds, 0, $limit);
+
+            return (object)['category' => $category, 'posts' => $posts];
+        };
+        // Fetch all data needed for the page at once
+        $topNewsData = $getPostsForCategory(28, 8);
+        $nationalData = $getPostsForCategory(12, 5);
+        $countrywideData = $getPostsForCategory(9, 4); 
+        $sportsData = $getPostsForCategory(24, 7); 
+        $entertainmentData = $getPostsForCategory(15, 7);
+        $economyData = $getPostsForCategory(14, 4); // 
+        $politicsData = $getPostsForCategory(16, 4);
+        $lifestyleData = $getPostsForCategory(17, 4);
+        $jobsData = $getPostsForCategory(21, 4);
+        // Data for right columns or special sections
+        $opinionData = $getPostsForCategory(9, 1); // *** Change 20 to your 'মতামত' category ID ***
+        $politicsRightData = $getPostsForCategory(13, 3); 
+        $jobsRightData = $getPostsForCategory(18, 3);
+    }
+@endphp
+
+@if (is_plugin_active('blog'))
+<main class="container py-3">
+        <!-- Ad Banner -->
+        <div class="ad-banner text-center mb-3">
+           {!! dynamic_sidebar('center-ads-1') !!}
+        </div>
+        
+        <section class="cat-one">
+            <div class="row g-4">
+                <!-- Left Column (Main Story) -->
+                <div class="col-md-9">
+                     [featured-posts][/featured-posts]
+                    <!-- topnews -->
+                    <div class="row mini-card-0">
+                         @if ($topNewsData->category && $topNewsData->posts->isNotEmpty())
+                         @foreach ($topNewsData->posts as $post)
+                            <!-- News Item -->
+                        <div class="col-sm-6 col-6 col-md-3 border-right">
+                            <a href="{{ $post->url }}" class="text-decoration-none text-dark">
+                                <div class="card border-bottom mb-3">
+                                    <div class="cate-two-zoom">
+                                        <img src="{{ RvMedia::getImageUrl($post->image, 'medium', false, RvMedia::getDefaultImage()) }}" class="card-img-top fixed-img-two " alt="{{ $post->name }}">
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <h4 class="news-title-two"> {{ $post->name }} </h4>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <!-- News Item -->
+                          @endforeach
+                        @endif
+
+                    </div>
+                    <!-- /top -->
+                </div>
+                <!-- Right Column (Ad and Opinion) -->
+                <div class="col-md-3 border-left ">
+                    <!-- ads -->
+                     <div class="box-content text-center pb-3">
+                        {!! dynamic_sidebar('ads-1') !!}
+                    </div>
+                    <div class="tabnews-area">
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs justify-content-center nav-justified" id="newsTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="latest-tab" data-bs-toggle="tab" data-bs-target="#latest" type="button" role="tab" aria-controls="latest" aria-selected="true">সর্বশেষ</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="popular-tab" data-bs-toggle="tab" data-bs-target="#popular" type="button" role="tab" aria-controls="popular" aria-selected="false">জনপ্রিয় সংবাদ</button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content  border-top-0 pt-2" id="newsTabContent">
+                            <!-- সর্বশেষ -->
+                            <div class="tab-pane fade show active" id="latest" role="tabpanel" aria-labelledby="latest-tab">
+                                <div class="d-flex flex-column gap-3">
+                                    <!-- News Item -->
+                                    <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="fflex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex lat-tab gap-2 border-bottom-pro pb-2">
+                                         <div class="img-hover-zoom-tb">
+                                            <img src="img/iran.webp" class="img-fluid fixed-img " alt="news2">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">ভয়াবহ সড়ক দুর্ঘটনায় প্রাণ হারালেন অভিনেত্রী মাহির ভাই</a>
+                                        </div>
+                                    </div>
+                                 
+                                </div>
+                            </div>
+
+                            <!-- জনপ্রিয় -->
+                            <div class="tab-pane fade" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+                                <div class="d-flex flex-column gap-3">
+                                   <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+       
+
+        <section class="ads">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="ad-banner text-center my-3">
+                        <img src="img/ad_728x90.jpg" alt="" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="ad-banner text-center my-3">
+                        <img src="img/ad_728x90.jpg" alt="" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- জাতীয় -->
+        <section class="cat-four">
+            <div class="row">
+                <!-- left col-9 -->
+                <div class="col-lg-9">
+                    @if ($nationalData->category && $nationalData->posts->isNotEmpty())
+                    <div class="opinion-section">
+                        <h4><a href="{{ $nationalData->category->url }}"> {{ $nationalData->category->name }} </a></h4>
+                    </div>
+                     <div class="row">
+                         @php $firstPost = $nationalData->posts->first(); @endphp
+                            @if ($firstPost)
+                            <div class="col-lg-6">
+                                <div class="bg-cat-news card mb-3">
+                                    <a href="#">
+                                        <div class="cate-two-zoom5">
+                                            <img class="img-fluid" src="{{ RvMedia::getImageUrl($firstPost->image, 'featured', false, RvMedia::getDefaultImage()) }}" alt="{{ $firstPost->name }}" alt="">
+                                        </div>
+                                        <h4 class="pt-3 comtitle">{{ $firstPost->name }}  </h4>
+                                        <p> {{ Str::limit($firstPost->description, 130) }} </p>
+                                    </a>
+                                </div>
+                            </div>
+                         @endif
+                        <!-- Middle Column (Secondary Stories) -->
+                        <div class="col-lg-6">
+                             @foreach ($nationalData->posts->skip(1) as $post)
+                            <div class="d-flex flex-column gap-3 list-card">
+                                <!-- Horizontal News Card 1 -->
+                                <div class="card news-card border-bottom pb-3 img-hover-zoom">
+                                    <div class="card-body d-flex gap-3 align-items-center">
+                                        <a href="{{ $post->url }}">
+                                            <div class="cate-two-zoom6">
+                                                <img src="{{ RvMedia::getImageUrl($post->image, 'medium', false, RvMedia::getDefaultImage()) }}" class="" alt="Adviser">
+                                            </div>
+                                        </a>
+                                        <div class="flex-grow-1">
+                                            <a href="{{ $post->url }}">
+                                                <h5 class="card-title">{{ $post->name }}</h5>
+                                            </a>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                             @endforeach
+                        </div>
+
+                     </div>
+                      @endif
+                </div>
+                <!-- left col-9 -->
+                <!-- right Side -->
+                 <div class="col-lg-3">
+                   <div class="box-title"> <h4>আর্কাইভ</h3> </div>
+                     <div class="box-content text-center py-3">
+                        <img src="img/ads3.png" class="img-fluid" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+          <!-- Ad Banner -->
+        <div class="ad-banner text-center mb-3">
+           <img src="img/ad_728x90.jpg" alt="" class="img-fluid">
+        </div>
+
+
+          <!-- অর্থনীতি -->
+        <section class="cat-two">
+            <div class="cat-two-area ">
+                <!-- News Cards (Grid) -->
+                <div class="row pb-3">
+                   <div class="col-md-9">
+                    @if ($countrywideData->category && $countrywideData->posts->isNotEmpty())
+                        <div class="opinion-section">
+                            <h4><a href="#"> জাতীয় </a></h4>
+                        </div>
+
+                        <div class="row border-bottom pb-2">
+                             <!-- News Item -->
+                            <div class="col-sm-6 col-6 col-md-4 border-right">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="card border-0 h-100">
+                                        <div class="cate-two-zoom">
+                                            <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- News Item -->
+                             <!-- News Item -->
+                            <div class="col-sm-6 col-6 col-md-4 border-right">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="card border-0 h-100">
+                                        <div class="cate-two-zoom">
+                                            <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- News Item -->
+                             <!-- News Item -->
+                            <div class="col-sm-6 col-6 col-md-4">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="card border-0 h-100">
+                                        <div class="cate-two-zoom">
+                                            <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- News Item -->
+                        </div>
+
+                        <div class="row mt-3 mini-card-0">
+                             <!-- News Item -->
+                            <div class="col-sm-6 col-6 col-md-3 border-right">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="card border-0 h-100">
+                                        <div class="cate-two-zoom">
+                                            <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- News Item -->
+                             <!-- News Item -->
+                            <div class="col-sm-6 col-6 col-md-3 border-right">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="card border-0 h-100">
+                                        <div class="cate-two-zoom">
+                                            <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- News Item -->
+                             <!-- News Item -->
+                            <div class="col-sm-6 col-6 col-md-3 border-right">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="card border-0 h-100">
+                                        <div class="cate-two-zoom">
+                                            <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- News Item -->
+                              <!-- News Item -->
+                            <div class="col-sm-6 col-6 col-md-3">
+                                <a href="#" class="text-decoration-none text-dark">
+                                    <div class="card border-0 h-100">
+                                        <div class="cate-two-zoom">
+                                            <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <!-- News Item -->
+                        </div>
+                     @endif
+                   </div>
+                   <div class="col-md-3"></div>
+                </div>
+            </div>
+             <div class="h-row"></div>
+        </section>
+
+
+        <!-- news 0ne-two-three -->
+        <section class="cat-four">
+            <div class="row">
+                <div class="opinion-section">
+                        <h4><a href="#"> বিজনেস ও অর্থনীতি </a></h4>
+                </div>
+                <!-- left col-9 -->
+                <div class="col-lg-9">
+                     <div class="row">
+                        <div class="col-lg-6">
+                            <div class="bg-cat-news card mb-3">
+                                <a href="#">
+                                    <div class="cate-two-zoom5">
+                                        <img class="img-fluid" src="img/nrb.webp" alt="">
+                                    </div>
+                                    <h4 class="pt-3 comtitle">৩ নির্বাচনের অভিযোগ তদন্ত এবং সুপারিশ প্রণয়নে কমিটি গঠন</h4>
+                                    <p>মিরসরাইয়ে সোমবার রাতে একাধিক চুরির ঘটনা ঘটেছে। উপজেলার বড় কমলদহ ডাকঘর বুড়া হুজুরের মাজারের পাশে এনএস কম্পিউটার এন্ড ট্র্রেনিং সেন্টার নামে একটি প্রতিষ্ঠানের ভেন্টিলেটর ভেঙ্গে চুরির ঘটনা ঘটেছে।</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Middle Column (Secondary Stories) -->
+                        <div class="col-lg-6">
+                            <div class="d-flex flex-column gap-3 list-card">
+                                <!-- Horizontal News Card 1 -->
+                                <div class="card news-card border-bottom pb-3 img-hover-zoom">
+                                    <div class="card-body d-flex gap-3 align-items-center">
+                                        <a href="#">
+                                            <div class="cate-two-zoom6">
+                                                <img src="img/iran.webp" class="" alt="Adviser">
+                                            </div>
+                                        </a>
+                                        <div class="flex-grow-1">
+                                            <a href="#">
+                                                <h5 class="card-title">‘আমরা কোনো জোট করছি না’, বাংলাদেশ-চীন-পাকিস্তান বৈঠক নিয়ে উপদেষ্টা</h5>
+                                            </a>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <!-- Horizontal News Card 1 -->
+                                <div class="card news-card border-bottom pb-3 img-hover-zoom">
+                                    <div class="card-body d-flex gap-3 align-items-center">
+                                        <a href="#">
+                                            <div class="cate-two-zoom6">
+                                                <img src="img/iran.webp" class="" alt="Adviser">
+                                            </div>
+                                        </a>
+                                        <div class="flex-grow-1">
+                                            <a href="#">
+                                                <h5 class="card-title">‘আমরা কোনো জোট করছি না’, বাংলাদেশ-চীন-পাকিস্তান বৈঠক নিয়ে উপদেষ্টা</h5>
+                                            </a>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <!-- Horizontal News Card 2 -->
+                                <div class="card news-card border-bottom pb-3 img-hover-zoom">
+                                    <div class="card-body d-flex gap-3 align-items-center">
+                                         <a href="#">
+                                            <div class="cate-two-zoom6">
+                                                <img src="img/iran.webp" class="" alt="Adviser">
+                                            </div>
+                                        </a>
+                                        <div class="flex-grow-1">
+                                            <a href="#">
+                                            <h5 class="card-title"> দেশের স্বার্থে স্থলবন্দরগুলোকে আরও গতিশীল করার আহ্বান উপদেষ্টার</h5>
+                                            </a>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                                <!-- Horizontal News Card 2 -->
+                                <div class="card news-card border-bottom pb-3 img-hover-zoom">
+                                    <div class="card-body d-flex gap-3 align-items-center">
+                                         <a href="#" class="">
+                                            <div class="cate-two-zoom6">
+                                                <img src="img/iran.webp" class="" alt="Adviser">
+                                            </div>
+                                        </a>
+                                        <div class="flex-grow-1">
+                                            <a href="#">
+                                            <h5 class="card-title">যুদ্ধের পর প্রথম ভাষণে যা বললেন খামেনি</h5>
+                                            </a>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                     </div>
+                </div>
+                <!-- left col-9 -->
+                <!-- right Side -->
+                 <div class="col-lg-3">
+                   <div class="box-title"> <h4>আর্কাইভ</h3> </div>
+                     <div class="box-content text-center py-3">
+                        <img src="img/ads3.png" class="img-fluid" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+         <!-- news 0ne-two-three -->
+        <section class="cat-four">
+            <div class="row">
+                <!-- left col-9 -->
+                <div class="col-lg-9">
+                    <div class="opinion-section"><h4><a href="#"> বিনোদন </a></h4></div>
+                     <div class="row">
+                        <div class="col-lg-6">
+                            <div class="bg-cat-news card mb-3">
+                                <a href="#">
+                                    <div class="cate-two-zoom5">
+                                        <img class="img-fluid" src="img/nrb.webp" alt="">
+                                    </div>
+                                    <h4 class="pt-3 comtitle">৩ নির্বাচনের অভিযোগ তদন্ত এবং সুপারিশ প্রণয়নে কমিটি গঠন</h4>
+                                    <p>মিরসরাইয়ে সোমবার রাতে একাধিক চুরির ঘটনা ঘটেছে। উপজেলার বড় কমলদহ ডাকঘর বুড়া হুজুরের মাজারের পাশে এনএস কম্পিউটার এন্ড ট্র্রেনিং সেন্টার নামে একটি প্রতিষ্ঠানের ভেন্টিলেটর ভেঙ্গে চুরির ঘটনা ঘটেছে।</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Middle Column (Secondary Stories) -->
+                        <div class="col-lg-6">
+                            <div class="row">
+                            <div class="col-md-6">
+                                <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body p-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body p-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body p-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body p-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                     </div>
+                </div>
+                <!-- left col-9 -->
+                <!-- right Side -->
+                 <div class="col-lg-3">
+                   <div class="opinion-section"><h4><a href="#"> শেয়ার বাজার </a></h4></div>
+                    <div class="right-news-list">
+                        <div class="list-news-grid">
+                            <a href="#" class="text-decoration-none text-dark">
+                                <div class="card border-bottom h-100">
+                                    <div class="cate-two-zoom">
+                                        <img src="img/image-227002-1759042166-min.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <h4 class="news-title-two fw-bold"> <span class="text-danger"> এশিয়া কাপ </span> হামজাকে নিয়ে বাংলাদেশের শক্তিশালী দল ঘোষণা </h4>
+                                    </div>
+                                </div>
+                            </a>
+                            
+                            <div class="d-flex flex-column gap-3 mt-2">
+                                    <!-- News Item -->
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+         <!-- news 0ne-two-three -->
+        <section class="cat-four">
+            <div class="row">
+                <!-- left col-9 -->
+                <div class="col-lg-9">
+                    <div class="opinion-section"><h4><a href="#"> বিনোদন </a></h4></div>
+                     <div class="row">
+                        <div class="col-lg-3">
+                            <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body pt-2 pb-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                            </div>
+                            <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body pt-2 pb-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="bg-cat-news card mb-3">
+                                <a href="#">
+                                    <div class="cate-two-zoom5">
+                                        <img class="img-fluid" src="img/nrb.webp" alt="">
+                                    </div>
+                                    <h4 class="pt-3 comtitle">৩ নির্বাচনের অভিযোগ তদন্ত এবং সুপারিশ প্রণয়নে কমিটি গঠন</h4>
+                                    <p>মিরসরাইয়ে সোমবার রাতে একাধিক চুরির ঘটনা ঘটেছে। উপজেলার বড় কমলদহ ডাকঘর বুড়া হুজুরের মাজারের পাশে এনএস কম্পিউটার এন্ড ট্র্রেনিং সেন্টার নামে একটি প্রতিষ্ঠানের ভেন্টিলেটর ভেঙ্গে চুরির ঘটনা ঘটেছে।</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Middle Column (Secondary Stories) -->
+                        <div class="col-lg-3">
+                            <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body pt-2 pt-2 pb-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                            </div>
+
+                            <div class="top-card">
+                                    <a href="#" class="text-decoration-none text-dark">
+                                        <div class="card border-0 h-100">
+                                            <div class="cate-two-zoom">
+                                                <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1" style="height: 150px;">
+                                            </div>
+                                            <div class="card-body pt-2 pb-2">
+                                                <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                            </div>
+
+                        </div>
+                     </div>
+                </div>
+                <!-- left col-9 -->
+                <!-- right Side -->
+                  <div class="col-lg-3">
+                   <div class="opinion-section"><h4><a href="#"> শেয়ার বাজার </a></h4></div>
+                    <div class="right-news-list">
+                        <div class="list-news-grid">
+                            <a href="#" class="text-decoration-none text-dark">
+                                <div class="card border-bottom h-100">
+                                    <div class="cate-two-zoom">
+                                        <img src="img/image-227002-1759042166-min.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <h4 class="news-title-two fw-bold"> <span class="text-danger"> এশিয়া কাপ </span> হামজাকে নিয়ে বাংলাদেশের শক্তিশালী দল ঘোষণা </h4>
+                                    </div>
+                                </div>
+                            </a>
+                            
+                            <div class="d-flex flex-column gap-3 mt-2">
+                                    <!-- News Item -->
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+      
+      
+
+        <!-- news 0ne-two-three -->
+        <section class="cat-four mt-3">
+            <div class="row">
+                <!-- left col-9 -->
+                <div class="col-lg-6 md-divider">
+                    <div class="opinion-section"><h4><a href="#"> বিজনেস ও অর্থনীতি </a></h4> </div>
+                     <div class="row">
+                        <div class="col-lg-6 md-divider">
+                            <div class="bg-cat-news card mb-3">
+                                <a href="#">
+                                    <div class="cate-two-zoom5">
+                                        <img class="img-fluid" src="img/nrb.webp" alt="">
+                                    </div>
+                                    <h4 class="pt-3 comtitle">৩ নির্বাচনের অভিযোগ তদন্ত এবং সুপারিশ প্রণয়নে কমিটি গঠন</h4>
+                                    <p>মিরসরাইয়ে সোমবার রাতে একাধিক চুরির ঘটনা ঘটেছে। উপজেলার বড় কমলদহ ডাকঘর বুড়া হুজুরের মাজারের পাশে এনএস কম্পিউটার এন্ড ট্র্রেনিং সেন্টার নামে একটি প্রতিষ্ঠানের ভেন্টিলেটর ভেঙ্গে চুরির ঘটনা ঘটেছে।</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Middle Column (Secondary Stories) -->
+                        <div class="col-lg-6">
+                              <div class="d-flex flex-column gap-3">
+                                    <!-- News Item -->
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                        </div>
+                     </div>
+                </div>
+                <!-- left col-9 -->
+                <!-- right Side -->
+                 <div class="col-lg-6">
+                    <div class="opinion-section"><h4><a href="#"> বিজনেস ও অর্থনীতি </a></h4> </div>
+                    <div class="row">
+                        <div class="col-lg-6 md-divider">
+                            <div class="bg-cat-news card mb-3">
+                                <a href="#">
+                                    <div class="cate-two-zoom5">
+                                        <img class="img-fluid" src="img/nrb.webp" alt="">
+                                    </div>
+                                    <h4 class="pt-3 comtitle">৩ নির্বাচনের অভিযোগ তদন্ত এবং সুপারিশ প্রণয়নে কমিটি গঠন</h4>
+                                    <p>মিরসরাইয়ে সোমবার রাতে একাধিক চুরির ঘটনা ঘটেছে। উপজেলার বড় কমলদহ ডাকঘর বুড়া হুজুরের মাজারের পাশে এনএস কম্পিউটার এন্ড ট্র্রেনিং সেন্টার নামে একটি প্রতিষ্ঠানের ভেন্টিলেটর ভেঙ্গে চুরির ঘটনা ঘটেছে।</p>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Middle Column (Secondary Stories) -->
+                        <div class="col-lg-6">
+                              <div class="d-flex flex-column gap-3">
+                                    <!-- News Item -->
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text ">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                     <div class="d-flex lat-tab gap-2 border-bottom pb-2">
+                                        <div class="img-hover-zoom-tb">
+                                            <img src="img/nrb.webp" class="img-fluid fixed-img " alt="news1">
+                                        </div>
+                                        <div class="flex-grow-text">
+                                            <a href="#" class="news-title">আমাদের অনেক আগেই বিচ্ছেদ হওয়ার কথা ছিল : কাজল</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- অর্থনীতি -->
+        <section class="cat-two">
+            <div class="cat-two-area my-4">
+                <div class="opinion-section mt-3">
+                        <h4><a href="#"> মতামত ও কলাম </a></h4>
+                </div>
+
+                <!-- News Cards (Grid) -->
+                <div class="row g-4 mt-3 pb-3" style="background-color: #eee; margin: 0;">
+                    <!-- News Item -->
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+ 
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news2.jpg" class="card-img-top fixed-img-two " alt="News 2">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">চাঁদা না পেয়ে স্বামীকে মারধর, স্ত্রীকে ধর্ষণের অভিযোগ</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news3.jpg" class="card-img-top fixed-img-two " alt="News 3">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">কাতারে মেলায় নওগাঁর আম</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news4.jpg" class="card-img-top fixed-img-two " alt="News 4">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">এবার মামলা চালিয়ে যাওয়ার ঘোষণা দিলেন সেই নারী</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+ 
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news2.jpg" class="card-img-top fixed-img-two " alt="News 2">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">চাঁদা না পেয়ে স্বামীকে মারধর, স্ত্রীকে ধর্ষণের অভিযোগ</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news3.jpg" class="card-img-top fixed-img-two " alt="News 3">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">কাতারে মেলায় নওগাঁর আম</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-sm-6 col-6 col-md-3 ">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-x h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news4.jpg" class="card-img-top fixed-img-two " alt="News 4">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two">এবার মামলা চালিয়ে যাওয়ার ঘোষণা দিলেন সেই নারী</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+
+                </div>
+            </div>
+             <div class="h-row"></div>
+        </section>
+
+        <section>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class=" mt-3">
+                       <div class="opinion-section"><h4><a href="#">অর্থনীতি </a></h4> </div>
+                    </div>
+                    <!-- News Item -->
+                    <div class="list-news-grid">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-bottom h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/image-227002-1759042166-min.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two fw-bold"> <span class="text-danger"> এশিয়া কাপ </span> হামজাকে নিয়ে বাংলাদেশের শক্তিশালী দল ঘোষণা </h4>
+                                </div>
+                            </div>
+                        </a>
+                        <ul class="list-unstyled mt-2">
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">নির্ধারিত সময়ের মধ্যেই সরকারকে পিআর পদ্ধতিতে নির্বাচন দিতে হবে : বুলবুল</a> </li>
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">জুলাই বিপ্লব অর্থবহ করতে গণহত্যার বিচার হতে হবে : সেলিম উদ্দিন</a> </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class=" mt-3">
+                         <div class="opinion-section"><h4><a href="#">অর্থনীতি </a></h4> </div>
+                    </div>
+                    <!-- News Item -->
+                    <div class="list-news-grid">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-bottom h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two fw-bold">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                </div>
+                            </div>
+                        </a>
+                        <ul class="list-unstyled mt-2">
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">নির্ধারিত সময়ের মধ্যেই সরকারকে পিআর পদ্ধতিতে নির্বাচন দিতে হবে : বুলবুল</a> </li>
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">জুলাই বিপ্লব অর্থবহ করতে গণহত্যার বিচার হতে হবে : সেলিম উদ্দিন</a> </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class=" mt-3">
+                        <div class="opinion-section"><h4><a href="#">অর্থনীতি </a></h4> </div>
+                    </div>
+                    <!-- News Item -->
+                    <div class="list-news-grid">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-bottom h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two fw-bold">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                </div>
+                            </div>
+                        </a>
+                        <ul class="list-unstyled mt-2">
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">নির্ধারিত সময়ের মধ্যেই সরকারকে পিআর পদ্ধতিতে নির্বাচন দিতে হবে : বুলবুল</a> </li>
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">জুলাই বিপ্লব অর্থবহ করতে গণহত্যার বিচার হতে হবে : সেলিম উদ্দিন</a> </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class=" mt-3">
+                        <div class="opinion-section"><h4><a href="#">অর্থনীতি </a></h4> </div>
+                    </div>
+                    <!-- News Item -->
+                    <div class="list-news-grid">
+                        <a href="#" class="text-decoration-none text-dark">
+                            <div class="card border-bottom h-100">
+                                <div class="cate-two-zoom">
+                                    <img src="img/news1.jpg" class="card-img-top fixed-img-two " alt="News 1">
+                                </div>
+                                <div class="card-body p-2">
+                                    <h4 class="news-title-two fw-bold">নাশকতার পরিকল্পনায় ইউপি চেয়ারম্যান গ্রেপ্তার</h4>
+                                </div>
+                            </div>
+                        </a>
+                        <ul class="list-unstyled mt-2">
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">নির্ধারিত সময়ের মধ্যেই সরকারকে পিআর পদ্ধতিতে নির্বাচন দিতে হবে : বুলবুল</a> </li>
+                            <li class="sidebar-post border-bottom pb-2 mb-2"> <a href="#">জুলাই বিপ্লব অর্থবহ করতে গণহত্যার বিচার হতে হবে : সেলিম উদ্দিন</a> </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+@endif

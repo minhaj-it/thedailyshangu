@@ -1,0 +1,47 @@
+@php
+    use Botble\Blog\Repositories\Interfaces\CategoryInterface;
+    use Botble\Blog\Repositories\Interfaces\PostInterface;
+    use Botble\Base\Enums\BaseStatusEnum;
+    use Illuminate\Support\Facades\Cache;
+    use Illuminate\Support\Collection;
+    if (is_plugin_active('blog')) {
+        // --- Central Data Fetching Block ---
+        $categoryRepo = app(CategoryInterface::class);
+        $postRepo = app(PostInterface::class);
+        $cacheTime = now()->addMinutes(15 * 60); // Cache duration
+        /**
+         * A reusable function to get category details and its posts with caching.
+         * @param int $categoryId
+         * @param int $limit
+         * @return object { category: ?object, posts: Collection }
+         */
+        $getPostsForCategory = function(int $categoryId, int $limit) use ($categoryRepo, $postRepo, $cacheTime) {
+            $cacheKey = 'theme.home.category_posts.' . $categoryId . '.' . $limit;
+
+            return Cache::remember($cacheKey, $cacheTime, function () use ($categoryId, $limit, $categoryRepo, $postRepo) {
+                $category = $categoryRepo->getFirstBy(['id' => $categoryId, 'status' => BaseStatusEnum::PUBLISHED]);
+                if (!$category) {
+                    return (object)['category' => null, 'posts' => collect()];
+                }
+                $allRelatedCategoryIds = array_unique(array_merge($categoryRepo->getAllRelatedChildrenIds($category), [$categoryId]));
+                $posts = $postRepo->getByCategory($allRelatedCategoryIds, 0, $limit);
+
+                return (object)['category' => $category, 'posts' => $posts];
+            });
+        };
+        // Fetch all data needed for the page at once
+        $topNewsData = $getPostsForCategory(9, 6); // *** Change 9 to your 'topnews' category ID ***
+        $nationalData = $getPostsForCategory(9, 4); // *** Change 10 to your 'জাতীয়তা' category ID ***
+        $countrywideData = $getPostsForCategory(9, 4); // *** Change 11 to your 'সারাদেশ' category ID ***
+        $sportsData = $getPostsForCategory(9, 7); // *** Change 12 to your 'খেলা' category ID ***
+        $entertainmentData = $getPostsForCategory(9, 7); // *** Change 13 to your 'বিনোদন' category ID ***
+        $economyData = $getPostsForCategory(9, 4); // *** Change 14 to your 'অর্থনীতি' category ID ***
+        $politicsData = $getPostsForCategory(9, 4); // *** Change 15 to your 'রাজনীতি' category ID ***
+        $lifestyleData = $getPostsForCategory(9, 4); // *** Change 16 to your 'লাইফস্টাইল' category ID ***
+        $jobsData = $getPostsForCategory(9, 4); // *** Change 17 to your 'জবস' category ID ***
+        // Data for right columns or special sections
+        $opinionData = $getPostsForCategory(9, 1); // *** Change 20 to your 'মতামত' category ID ***
+        $politicsRightData = $getPostsForCategory(9, 3); // *** Change 21 to your right-column category for 'রাজনীতি' section ***
+        $jobsRightData = $getPostsForCategory(9, 3); // *** Change 22 to your right-column category for 'জবস' section ***
+    }
+@endphp এই cache er karone latest news deka jaina

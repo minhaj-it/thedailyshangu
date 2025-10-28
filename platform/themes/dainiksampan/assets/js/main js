@@ -1,0 +1,57 @@
+
+ 
+
+
+
+// single page Print Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Print Functionality
+            const printButton = document.getElementById('print-btn');
+            if (printButton) {
+                printButton.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+
+            // 2. Font Size Adjustment Functionality
+            const articleContent = document.getElementById('article-content');
+            const increaseFontButton = document.getElementById('font-increase-btn');
+            const decreaseFontButton = document.getElementById('font-decrease-btn');
+
+            const minFontSize = 12; // Minimum font size in pixels
+            const maxFontSize = 24; // Maximum font size in pixels
+            const changeStep = 1;   // How many pixels to change on each click
+
+            function changeFontSize(amount) {
+                if (!articleContent) return;
+
+                // Get current font size as a number
+                const currentSizeStr = window.getComputedStyle(articleContent).fontSize;
+                let currentSize = parseFloat(currentSizeStr);
+
+                // Calculate new font size
+                let newSize = currentSize + amount;
+
+                // Apply limits
+                if (newSize < minFontSize) {
+                    newSize = minFontSize;
+                } else if (newSize > maxFontSize) {
+                    newSize = maxFontSize;
+                }
+
+                // Apply the new font size
+                articleContent.style.fontSize = newSize + 'px';
+            }
+
+            if (increaseFontButton) {
+                increaseFontButton.addEventListener('click', function() {
+                    changeFontSize(changeStep); // Increase by 'changeStep' pixels
+                });
+            }
+
+            if (decreaseFontButton) {
+                decreaseFontButton.addEventListener('click', function() {
+                    changeFontSize(-changeStep); // Decrease by 'changeStep' pixels
+                });
+            }
+        });

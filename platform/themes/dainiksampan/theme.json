@@ -1,0 +1,10 @@
+{
+    "id": "botble/{-theme}",
+    "name": "Dainiksampan",
+    "namespace": "Theme\\Dainiksampan\\",
+    "author": "Minhaj Uddin",
+    "url": "https://minhaj-it.com",
+    "version": "1.0.0",
+    "description": "This theme is Laravel theme",
+    "required_plugins": []
+}
