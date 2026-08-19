@@ -11,6 +11,7 @@ Route::group([
     Route::get('posts', 'PostController@index');
     Route::get('categories', 'CategoryController@index');
     Route::get('tags', 'TagController@index');
+    Route::get('settings/general', 'SettingController@general');
 
     Route::get('posts/filters', 'PostController@getFilters');
     Route::get('posts/{slug}', 'PostController@findBySlug');
